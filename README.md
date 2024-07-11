@@ -39,6 +39,54 @@ const res2 = await pb.find({
 console.log(res2);
 ```
 
+# Types
+
+All types are in `'typescript-pocketbase-orm/dist/interfaces'`
+
+# Errors
+
+All errors are in `'typescript-pocketbase-orm/dist/errors'`
+
+```typescript
+import { UnauthenticatedError, UnauthorizedError, SomethingWentWrongError, ResourceNotFoundError } from "typescript-pocketbase-orm/dist/errors";
+
+try {
+    await pb.authAdmin("admin", "admin");
+} catch (e) {
+    if (e instanceof UnauthenticatedError) {
+        console.log("Unauthenticated");
+    }
+}
+
+try {
+    await pb.findAll({
+        collection: "users",
+        where: "email='test@test.com'",
+        sortBy: {
+            field: "email",
+            side: SortSide.ASC
+        },
+        relations: ["posts"]
+    });
+} catch (e) {
+    if (e instanceof SomethingWentWrongError) {
+        console.log("Something went wrong");
+    }
+
+    if (e instanceof UnauthenticatedError) {
+        console.log("Unauthenticated");
+    }  
+
+    if (e instanceof UnauthorizedError) {
+        console.log("Unauthorized");
+    }
+
+    if (e instanceof ResourceNotFoundError) {
+        console.log("Resource not found");
+    }   
+}
+```
+
 # Available methods
 
 ## authAdmin
@@ -101,6 +149,6 @@ async update(collection: string, id: string, data: any);
 async delete(collection: string, id: string);
 ```
 
-# Types
+# auhor
 
-All types are in `'typescript-pocketbase-orm/dist/interfaces'`
+[nexus9111](https://github.com/nexus9111)
