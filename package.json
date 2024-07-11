@@ -1,18 +1,23 @@
 {
   "name": "typescript-pocketbase-orm",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "typescript": "tsc"
   },
   "keywords": [],
-  "author": "",
+  "author": "nexus9111",
   "license": "ISC",
   "devDependencies": {
     "typescript": "^5.5.3"
   },
   "dependencies": {
     "pocketbase": "^0.21.3"
-  }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "types": "dist/index.d.ts"
 }
