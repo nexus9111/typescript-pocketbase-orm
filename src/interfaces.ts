@@ -1,3 +1,9 @@
+export interface PocketBaseError {
+    status: number; 
+    response: {
+        message: string;
+    }
+}
 
 export enum SortSide {
     ASC = "asc",

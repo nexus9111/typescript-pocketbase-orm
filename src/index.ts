@@ -1,4 +1,5 @@
-import { SortSide, findAllQuery, findByIdQuery, findFirstQuery, findQuery } from "./interfaces";
+import { ErrorPocketBaseConnection, InternalServerError, ResourceNotFoundError, SomethingWentWrongError, UnauthenticatedError, UnauthorizedError } from "./errors";
+import { PocketBaseError, SortSide, findAllQuery, findByIdQuery, findFirstQuery, findQuery } from "./interfaces";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const PocketBase = require('pocketbase/cjs');
@@ -9,7 +10,7 @@ interface data {
     expand?: string[];
 }
 
-const getData = (obj : findAllQuery | findQuery | findFirstQuery) => {
+const getData = (obj: findAllQuery | findQuery | findFirstQuery) => {
     const useSort = obj?.sortBy?.field && obj?.sortBy?.side;
 
     const data: data = {}
@@ -27,72 +28,128 @@ const getData = (obj : findAllQuery | findQuery | findFirstQuery) => {
     }
 
     return data;
-}   
+}
+
+const processError = (error: any) => {
+    let e = error as PocketBaseError;
+
+    if (e.status === 400) {
+        throw new SomethingWentWrongError(e.response.message);
+    }
+
+    if (e.status === 401) {
+        throw new UnauthenticatedError(e.response.message);
+    }
+
+    if (e.status === 403) {
+        throw new UnauthorizedError(e.response.message);
+    }
+
+    if (e.status === 404) {
+        throw new ResourceNotFoundError(e.response.message);
+    }
+
+    throw new InternalServerError("Something went wrong");
+}
 
 export class PocketBaseORM {
     private pocketbase: typeof PocketBase;
 
     constructor(url: string) {
-        this.pocketbase = new PocketBase(url);
+        try {
+            this.pocketbase = new PocketBase(url);
+        } catch (error) {
+            throw new ErrorPocketBaseConnection("Could not connect to PocketBase");
+        }
     }
 
     public async authAdmin(username: string, password: string) {
-        return await this.pocketbase.admins.authWithPassword(username, password);
+        try {
+            return await this.pocketbase.admins.authWithPassword(username, password);
+        } catch (error) {
+            processError(error);
+        }
     }
 
     public async authUser(username: string, password: string, userCollectionName: string = 'users') {
-        return await this.pocketbase.collection(userCollectionName).authWithPassword(username, password);
+        try {
+            return await this.pocketbase.collection(userCollectionName).authWithPassword(username, password);
+        } catch (error) {
+            processError(error);
+        }
     }
 
     public async logout() {
-        return await this.pocketbase.authStore.clear();
+        try {
+            return await this.pocketbase.authStore.clear();
+        } catch (error) {
+            processError(error);
+        }
     }
 
     public async findAll(query: findAllQuery) {
-        const data: data = getData(query);
-
-        const res = await this.pocketbase.collection(query.collection).getFullList(data);
-
-        return res;
+        try {
+            const data: data = getData(query);
+            const res = await this.pocketbase.collection(query.collection).getFullList(data);
+            return res;
+        } catch (error) {
+            processError(error);
+        }
     }
 
     public async find(query: findQuery) {
-        const data: data = getData(query);
-
-        const res = await this.pocketbase.collection(query.collection).getList(query.page, query.limit, data);
-
-        return res;
+        try {
+            const data: data = getData(query);
+            const res = await this.pocketbase.collection(query.collection).getList(query.page, query.limit, data);
+            return res;
+        } catch (error) {
+            processError(error);
+        }
     }
 
     public async findFirst(query: findFirstQuery) {
-        const data: data = getData(query);
-
-        const res = await this.pocketbase.collection(query.collection).getFirstListItem(query.where, data);
-
-        return res;
+        try {
+            const data: data = getData(query);
+            const res = await this.pocketbase.collection(query.collection).getFirstListItem(query.where, data);
+            return res;
+        } catch (error) {
+            processError(error);
+        }
     }
 
     public async findById(query: findByIdQuery) {
-        const res = await this.pocketbase.collection(query.collection).getOne(query.id);
-
-        return res;
+        try {
+            const res = await this.pocketbase.collection(query.collection).getOne(query.id);
+            return res;
+        } catch (error) {
+            processError(error);
+        }
     }
 
     public async create(collection: string, data: any) {
-        const res = await this.pocketbase.collection(collection).create(data);
-
-        return res;
+        try {
+            const res = await this.pocketbase.collection(collection).create(data);
+            return res;
+        } catch (error) {
+            processError(error);
+        }
     }
 
     public async update(collection: string, id: string, data: any) {
-        const res = await this.pocketbase.collection(collection).update(id, data);
-
-        return res;
+        try {
+            const res = await this.pocketbase.collection(collection).update(id, data);
+            return res;
+        } catch (error) {
+            processError(error);
+        }
     }
 
     public async delete(collection: string, id: string) {
-        const res = await this.pocketbase.collection(collection).delete(id);
-
-        return res;
+        try {
+            const res = await this.pocketbase.collection(collection).delete(id);
+            return res;
+        } catch (error) {
+            processError(error);
+        }
     }
 }
