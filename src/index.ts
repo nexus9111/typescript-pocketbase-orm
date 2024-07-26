@@ -71,9 +71,25 @@ export class PocketBaseORM {
         }
     }
 
+    public async refreshAdmin(username: string, password: string) {
+        try {
+            return await this.pocketbase.admins.authRefresh();
+        } catch (error) {
+            processError(error);
+        }
+    }
+
     public async authUser(username: string, password: string, userCollectionName: string = 'users') {
         try {
             return await this.pocketbase.collection(userCollectionName).authWithPassword(username, password);
+        } catch (error) {
+            processError(error);
+        }
+    }
+
+    public async refreshUser(username: string, password: string, userCollectionName: string = 'users') {
+        try {
+            return await this.pocketbase.collection(userCollectionName).authRefresh();
         } catch (error) {
             processError(error);
         }
