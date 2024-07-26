@@ -71,7 +71,7 @@ export class PocketBaseORM {
         }
     }
 
-    public async refreshAdmin(username: string, password: string) {
+    public async refreshAdmin() {
         try {
             return await this.pocketbase.admins.authRefresh();
         } catch (error) {
@@ -87,7 +87,7 @@ export class PocketBaseORM {
         }
     }
 
-    public async refreshUser(username: string, password: string, userCollectionName: string = 'users') {
+    public async refreshUser(userCollectionName: string = 'users') {
         try {
             return await this.pocketbase.collection(userCollectionName).authRefresh();
         } catch (error) {
