@@ -149,6 +149,18 @@ async update(collection: string, id: string, data: any);
 async delete(collection: string, id: string);
 ```
 
+## verifyToken
+
+```typescript
+async verifyToken(token: string, userCollectionName: string = 'users');
+```
+
+## loadToken
+
+```typescript
+async loadToken(token: string);
+```
+
 # auhor
 
 [nexus9111](https://github.com/nexus9111)
