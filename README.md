@@ -158,7 +158,7 @@ async verifyToken(token: string, userCollectionName: string = 'users');
 ## loadToken
 
 ```typescript
-async loadToken(token: string);
+loadToken(token: string);
 ```
 
 # auhor
