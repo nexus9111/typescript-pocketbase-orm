@@ -168,4 +168,21 @@ export class PocketBaseORM {
             processError(error);
         }
     }
+
+    public async verifyToken(token: string, userCollectionName: string = 'users') {
+        try {
+            this.pocketbase.authStore.save(token, null);
+            await this.refreshUser(userCollectionName);
+        } catch (error) {
+            processError(error);
+        }
+    }
+
+    public loadToken(token: string) {
+        try {
+            this.pocketbase.authStore.save(token, null);
+        } catch (error) {
+            processError(error);
+        }
+    }
 }
