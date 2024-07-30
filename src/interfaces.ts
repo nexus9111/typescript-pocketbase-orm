@@ -46,3 +46,9 @@ export interface findFirstQuery {
     };
     relations?: string[];
 }
+
+export interface ResetPasswordQuery {
+    token: string;
+    password: string;
+    repeatPassword: string;
+  }

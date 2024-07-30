@@ -161,6 +161,18 @@ async verifyToken(token: string, userCollectionName: string = 'users');
 loadToken(token: string);
 ```
 
+## requestPasswordReset
+
+```typescript
+async requestPasswordReset(email: string, userCollectionName: string = 'users');
+```
+
+## confirmPasswordReset
+
+```typescript
+async confirmPasswordReset(resetPasswordData: ResetPasswordQuery, userCollectionName: string = 'users');
+```
+
 # auhor
 
 [nexus9111](https://github.com/nexus9111)

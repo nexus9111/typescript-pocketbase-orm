@@ -1,5 +1,5 @@
 import { ErrorPocketBaseConnection, InternalServerError, ResourceNotFoundError, SomethingWentWrongError, UnauthenticatedError, UnauthorizedError } from "./errors";
-import { PocketBaseError, SortSide, findAllQuery, findByIdQuery, findFirstQuery, findQuery } from "./interfaces";
+import { PocketBaseError, ResetPasswordQuery, SortSide, findAllQuery, findByIdQuery, findFirstQuery, findQuery } from "./interfaces";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const PocketBase = require('pocketbase/cjs');
@@ -90,6 +90,26 @@ export class PocketBaseORM {
     public async refreshUser(userCollectionName: string = 'users') {
         try {
             return await this.pocketbase.collection(userCollectionName).authRefresh();
+        } catch (error) {
+            processError(error);
+        }
+    }
+
+    public async requestPasswordReset(email: string, userCollectionName: string = 'users') {
+        try {
+            return await this.pocketbase.collection(userCollectionName).requestPasswordReset(email);
+        } catch (error) {
+            processError(error);
+        }
+    }
+
+    public async confirmPasswordReset(resetPasswordData: ResetPasswordQuery, userCollectionName: string = 'users') {
+        try {
+            return await this.pocketbase.collection(userCollectionName).confirmPasswordReset(
+                resetPasswordData.token,
+                resetPasswordData.password,
+                resetPasswordData.repeatPassword,
+            );
         } catch (error) {
             processError(error);
         }
