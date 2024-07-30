@@ -7,7 +7,7 @@ const PocketBase = require('pocketbase/cjs');
 interface data {
     filter?: string;
     sort?: string;
-    expand?: string[];
+    expand?: string;
 }
 
 const getData = (obj: findAllQuery | findQuery | findFirstQuery) => {
@@ -24,7 +24,7 @@ const getData = (obj: findAllQuery | findQuery | findFirstQuery) => {
     }
 
     if (obj.relations) {
-        data.expand = obj.relations;
+        data.expand = obj.relations.join(',');
     }
 
     return data;
